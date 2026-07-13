@@ -9,21 +9,16 @@ struct node
 
 struct node *create_list(struct node *start);
 void display(struct node *start);
-struct node *delete_last_nth_node(struct node *start,int n);
+void find_middle_node(struct node *start);
 
 int main()
 {
 	struct node *start = NULL;
-	int n=0;
 
 	start = create_list(start);
 	printf("List :\n");
 	display(start);
-	printf("Enter the last nth node to delete : ");
-	scanf("%d",&n);
-	start = delete_last_nth_node(start,n);
-	printf("\nAfter deleting last nth node form list :\n");
-	display(start);
+	find_middle_node(start);
 
 	return 0;
 }
@@ -37,16 +32,16 @@ struct node *create_list(struct node *start)
 	scanf("%d",&createNode);
 	if(createNode <= 0)
 	{
-		printf("Enter valid number of nodes to create.\n");
+		printf("Enter valid number of nodes to enter.\n");
 		return start;
 	}
-	
 	for(i=1;i<=createNode;i++)
 	{
 		printf("Enter element to insert : ");
 		scanf("%d",&data);
 		newNode = (struct node *)malloc(sizeof(struct node));
 		newNode->info = data;
+
 		if(start == NULL)
 		{
 			newNode->next = start;
@@ -81,44 +76,22 @@ void display(struct node *start)
 	printf("\n\n");
 }
 
-struct node *delete_last_nth_node(struct node *start,int n)
+void find_middle_node(struct node *start)
 {
-	struct node *ptr = NULL,*deleteNode = NULL,*pp = NULL,*k = NULL;
-	int i,count=0;
+	struct node *slow = NULL,*fast = NULL;
 
-	if(n <= 0 || start == NULL)
+	if(start == NULL)
 	{
-		printf("Nothing to delete.\n");
-		return start;
+		printf("List is empty\n");
+		return;
 	}
 
-	for(i=1,ptr=start;i<=n && ptr!=NULL;i++,ptr=ptr->next)
+	slow = fast = start;
+	while(fast != NULL && fast->next != NULL)
 	{
-		count++;
+		slow = slow->next;
+		fast = fast->next->next;
 	}
-	if(ptr == NULL)
-	{
-		if(count == n)
-		{
-			deleteNode = start;
-			start = deleteNode->next;
-			free(deleteNode);
-			return start;
-		}
-		printf("\n%d position exceeds the list.\n",n);
-		return start;
-	}
-	else
-	{
-		k = ptr;
-	}
-	for(pp=ptr=start; k!=NULL && ptr!= NULL;pp=ptr,k=k->next,ptr=ptr->next)
-	{
-		;
-	}
-	deleteNode = ptr;
-	pp->next = deleteNode->next;
-	free(deleteNode);
-	return start;
+	printf("Middle element of list is %d\n",slow->info);
 }
 

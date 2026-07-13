@@ -9,20 +9,19 @@ struct node
 
 struct node *create_list(struct node *start);
 void display(struct node *start);
-struct node *delete_last_nth_node(struct node *start,int n);
+struct node *delete_nth_node_from_last(struct node *start,int position);
 
 int main()
 {
 	struct node *start = NULL;
-	int n=0;
+	int position = 0;
 
 	start = create_list(start);
 	printf("List :\n");
 	display(start);
-	printf("Enter the last nth node to delete : ");
-	scanf("%d",&n);
-	start = delete_last_nth_node(start,n);
-	printf("\nAfter deleting last nth node form list :\n");
+	printf("Enter nth position to delete : ");
+	scanf("%d",&position);
+	start = delete_nth_node_from_last(start,position);
 	display(start);
 
 	return 0;
@@ -33,20 +32,20 @@ struct node *create_list(struct node *start)
 	struct node *newNode = NULL,*tail = NULL;
 	int data,i,createNode;
 
-	printf("Enter number of nodes to create : ");
+	printf("Enter number of nodes to create node : ");
 	scanf("%d",&createNode);
 	if(createNode <= 0)
 	{
 		printf("Enter valid number of nodes to create.\n");
 		return start;
 	}
-	
 	for(i=1;i<=createNode;i++)
 	{
 		printf("Enter element to insert : ");
 		scanf("%d",&data);
 		newNode = (struct node *)malloc(sizeof(struct node));
 		newNode->info = data;
+
 		if(start == NULL)
 		{
 			newNode->next = start;
@@ -81,44 +80,46 @@ void display(struct node *start)
 	printf("\n\n");
 }
 
-struct node *delete_last_nth_node(struct node *start,int n)
+struct node *delete_nth_node_from_last(struct node *start,int position)
 {
-	struct node *ptr = NULL,*deleteNode = NULL,*pp = NULL,*k = NULL;
+	struct node *ptr = NULL,*k = NULL,*pp = NULL,*deleteNode = NULL;
 	int i,count=0;
 
-	if(n <= 0 || start == NULL)
+	if(start == NULL || position <= 0)
 	{
 		printf("Nothing to delete.\n");
 		return start;
 	}
 
-	for(i=1,ptr=start;i<=n && ptr!=NULL;i++,ptr=ptr->next)
+	for(i=1,ptr=start;ptr!=NULL && i<=position;i++,ptr=ptr->next)
 	{
 		count++;
 	}
 	if(ptr == NULL)
 	{
-		if(count == n)
+		if(count == position)
 		{
 			deleteNode = start;
 			start = deleteNode->next;
 			free(deleteNode);
 			return start;
 		}
-		printf("\n%d position exceeds the list.\n",n);
+		printf("%d position exceeds the list.\n",position);
 		return start;
 	}
-	else
+	k = ptr;
+	ptr = start;
+	while(k!=NULL && ptr != NULL)
 	{
-		k = ptr;
+		pp = ptr;
+		ptr = ptr->next;
+		k = k->next;
 	}
-	for(pp=ptr=start; k!=NULL && ptr!= NULL;pp=ptr,k=k->next,ptr=ptr->next)
-	{
-		;
-	}
+	printf("ptr = %d\n",ptr->info);
 	deleteNode = ptr;
 	pp->next = deleteNode->next;
 	free(deleteNode);
+
 	return start;
 }
 
